@@ -1,0 +1,41 @@
+// engine/room_repository.svelte.ts
+import { none, some, type Opt } from "../utils/option";
+import { err, ok, type Result } from "../utils/result";
+import { type RoomId, Room } from "./room.svelte";
+
+export class RoomRepository {
+    private next_id: any = $state(0);
+    private readonly rooms: Record<RoomId, Room> = $state({});
+
+    constructor() { }
+
+    get(id: RoomId): Opt<Room> {
+        const res = this.rooms[id];
+        return res != null && res != undefined ? some(res) : none;
+    }
+    get_or_err(id: RoomId, msg?: string): Result<Room, string> {
+        const room_opt = this.get(id);
+        return room_opt.is_some() ? ok(room_opt.value) : err(msg ?? `Room ${id} does not exist`);
+    }
+
+    spawn(name: string): RoomId {
+        const id: RoomId = this.next_id++;
+        const room: Room = new Room(id, name);
+        this.rooms[id] = room;
+        return id;
+    }
+
+    delete(id: RoomId): Result<RoomId, string> {
+        if (delete this.rooms[id]) {
+            return ok(id);
+        }
+        return err(`Couldn't delete room: ${id}`);
+    }
+
+    all_ids(): RoomId[] {
+        return Object.keys(this.rooms).map(Number) as RoomId[];
+    }
+    all(): Room[] {
+        return Object.values(this.rooms);
+    }
+}
