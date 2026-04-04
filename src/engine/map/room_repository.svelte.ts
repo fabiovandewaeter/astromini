@@ -17,10 +17,14 @@ export class RoomRepository {
         const room_opt = this.get(id);
         return room_opt.is_some() ? ok(room_opt.value) : err(msg ?? `Room ${id} does not exist`);
     }
+    // TODO: removes this once we want to propagate Result
+    get_or_throw(id: RoomId): Room {
+        return this.get_or_err(id).unwrap();
+    }
 
-    spawn(name: string): RoomId {
+    spawn(name: string, x: number, y: number): RoomId {
         const id: RoomId = this.next_id++;
-        const room: Room = new Room(id, name);
+        const room: Room = new Room(id, name, x, y);
         this.rooms[id] = room;
         return id;
     }

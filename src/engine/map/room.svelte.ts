@@ -7,12 +7,16 @@ export type RoomId = number;
 export class Room {
     readonly id: RoomId;
     name: string = $state()!;
+    x: number = $state(0); // <-- NOUVEAU
+    y: number = $state(0); // <-- NOUVEAU
     entities: EntityId[] = $state([]);
     neighbors: RoomId[] = $state([]);
 
-    constructor(id: RoomId, name: string) {
+    constructor(id: RoomId, name: string, x: number, y: number) {
         this.id = id;
         this.name = name;
+        this.x = x;
+        this.y = y;
     }
 
     get_entities_without_player(player_id: EntityId) { return this.entities.filter(e_id => e_id !== player_id); }

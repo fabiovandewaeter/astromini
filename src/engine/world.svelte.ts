@@ -60,8 +60,8 @@ export class World {
         return ok(id);
     }
 
-    spawn_room(name: string): RoomId {
-        return this.room_repo.spawn(name);
+    spawn_room(name: string, x: number, y: number): RoomId {
+        return this.room_repo.spawn(name, x, y);
     }
 
     // setters

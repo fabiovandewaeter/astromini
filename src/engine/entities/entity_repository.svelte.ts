@@ -19,6 +19,9 @@ export class EntityRepository {
         const entity_opt = this.get(id);
         return entity_opt.is_some() ? ok(entity_opt.value) : err(msg ?? `Entity ${id} does not exist`);
     }
+    get_or_throw(id: EntityId): Entity {
+        return this.get_or_err(id).unwrap();
+    }
 
     spawn(name: string, room_id: RoomId, max_stats: Stats, extra_interactions: EntityInteraction[] = []): Result<EntityId, string> {
         const id: EntityId = this.next_id++;

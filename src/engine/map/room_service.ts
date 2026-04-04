@@ -7,19 +7,22 @@ import type { RoomId } from "./room.svelte";
 import type { RoomRepository } from "./room_repository.svelte";
 
 export function move_entity_to_room(entity_id: EntityId, new_room_id: RoomId, room_repo: RoomRepository, entity_repo: EntityRepository): Result<void, string> {
-    let new_room_res = room_repo.get_or_err(new_room_id);
-    if (new_room_res.is_err()) return err(new_room_res.error);
-    let new_room = new_room_res.unwrap();
+    // let new_room_res = room_repo.get_or_err(new_room_id);
+    // if (new_room_res.is_err()) return err(new_room_res.error);
+    // let new_room = new_room_res.unwrap();
+    let new_room = room_repo.get_or_throw(new_room_id);
 
-    let entity_res = entity_repo.get_or_err(entity_id);
-    if (entity_res.is_err()) return err(entity_res.error);
-    let entity = entity_res.unwrap();
+    // let entity_res = entity_repo.get_or_err(entity_id);
+    // if (entity_res.is_err()) return err(entity_res.error);
+    // let entity = entity_res.unwrap();
+    let entity = entity_repo.get_or_throw(entity_id);
 
     // remove entity from previous room
     if (entity.room_id.is_some()) {
-        let previous_room_res = room_repo.get_or_err(entity.room_id.value);
-        if (previous_room_res.is_err()) return err(previous_room_res.error);
-        let previous_room = previous_room_res.unwrap();
+        // let previous_room_res = room_repo.get_or_err(entity.room_id.value);
+        // if (previous_room_res.is_err()) return err(previous_room_res.error);
+        // let previous_room = previous_room_res.unwrap();
+        let previous_room = room_repo.get_or_throw(entity.room_id.value);
 
         // to avoid error if the entity is not in the room of his room_id
         if (previous_room.contains_entity(entity_id)) {
@@ -34,13 +37,15 @@ export function move_entity_to_room(entity_id: EntityId, new_room_id: RoomId, ro
 }
 
 export function connect_rooms(room_a_id: RoomId, room_b_id: RoomId, room_repo: RoomRepository): Result<void, string> {
-    let room_a_res = room_repo.get_or_err(room_a_id);
-    if (room_a_res.is_err()) return err(room_a_res.error);
-    let room_a = room_a_res.unwrap();
+    // let room_a_res = room_repo.get_or_err(room_a_id);
+    // if (room_a_res.is_err()) return err(room_a_res.error);
+    // let room_a = room_a_res.unwrap();
+    let room_a = room_repo.get_or_throw(room_a_id);
 
-    let room_b_res = room_repo.get_or_err(room_b_id);
-    if (room_b_res.is_err()) return err(room_b_res.error);
-    let room_b = room_b_res.unwrap();
+    // let room_b_res = room_repo.get_or_err(room_b_id);
+    // if (room_b_res.is_err()) return err(room_b_res.error);
+    // let room_b = room_b_res.unwrap();
+    let room_b = room_repo.get_or_throw(room_b_id);
 
     room_a.add_neighbor(room_b_id);
     room_b.add_neighbor(room_a_id);
@@ -48,13 +53,15 @@ export function connect_rooms(room_a_id: RoomId, room_b_id: RoomId, room_repo: R
 }
 
 export function remove_entity_from_room(entity_id: EntityId, room_id: RoomId, room_repo: RoomRepository, entity_repo: EntityRepository): Result<void, string> {
-    let entity_res = entity_repo.get_or_err(entity_id);
-    if (entity_res.is_err()) return err(entity_res.error);
-    let entity = entity_res.unwrap();
+    // let entity_res = entity_repo.get_or_err(entity_id);
+    // if (entity_res.is_err()) return err(entity_res.error);
+    // let entity = entity_res.unwrap();
+    let entity = entity_repo.get_or_throw(entity_id);
 
-    let room_res = room_repo.get_or_err(room_id);
-    if (room_res.is_err()) return err(room_res.error);
-    let room = room_res.unwrap();
+    // let room_res = room_repo.get_or_err(room_id);
+    // if (room_res.is_err()) return err(room_res.error);
+    // let room = room_res.unwrap();
+    let room = room_repo.get_or_throw(room_id);
 
     let res = room.remove_entity(entity_id);
     if (res.is_err()) return res;
